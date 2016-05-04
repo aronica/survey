@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Survey For You</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
+    <!--<link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.css" rel="stylesheet">-->
+    <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.js"></script></head>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+    <link href="http://webapplayers.com/inspinia_admin-v2.5/css/style.css" rel="stylesheet">
+<script src="//www.wufangbo.com/demo/jquery/31/jquery.sortable.js"></script>
+<script src="//cdn.bootcss.com/angular.js/1.4.7/angular.js"></script>
+
+<style type="text/css">
+    .container_border{
+        border-bottom: 1px solid #eee;
+        margin-bottom: 10px;
+    }
+    body{
+        background-color: #fff;
+    }
+    .ibox{
+        border-width: 0px 1px 1px 1px;
+        border-style: solid;
+        border-color: #e7eaec;
+    }
+    .container_border .label{
+        margin-left: 10px;
+    }
+    ul,li{
+        list-style: none;
+    }
+    .ibox-content{
+        cursor: move;
+    }
+
+    .sortable {
+        min-width: 310px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .sortable.grid {
+        overflow: hidden;
+    }
+    .sortable li {
+        list-style: none;
+        border: 1px solid #CCC;
+        background: #F6F6F6;
+        color: #1C94C4;
+        margin: 5px;
+        padding: 5px;
+        /*height: 22px;*/
+    }
+    .sortable.grid li {
+        line-height: 80px;
+        float: left;
+        width: 80px;
+        height: 80px;
+        text-align: center;
+    }
+    .handle {
+        cursor: move;
+    }
+    .sortable.connected {
+        /*width: 200px;*/
+        min-height: 100px;
+        float: left;
+    }
+    li.disabled {
+        opacity: 0.5;
+    }
+    li.highlight {
+        background: #FEE25F;
+    }
+    li.sortable-placeholder {
+        border: 1px dashed #CCC;
+        background: none;
+        height:30px;
+    }
+</style>
+<body>
+<div class="container"  ng-controller="stateCtr">
+    <div class="page-header">
+        <h1>Hypotechnical Firm</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="container_border">
+                <div class="container_border" ng-if="part0">
+                    <div>
+                        <h4>Before we begin, please provide the following information to help us classify your response.</h4>
+                        <p>S1. Company Name:&nbsp;<input type="text" name="company" ng-model="basic.company"/></p>
+                        <p>S2. What is your title?&nbsp;<input type="txt" name="title" ng-model="basic.title"/></p>
+                        <p>S3. Which function is your job closely allied with? (Select one)</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer facing (e.g., marketing, sales, service) &nbsp;<input type="radio" name="customer_or_backend" value="Customer facing" ng-model="basic.functions"></p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Back-end support (e.g., materials, operations, production, and engineering) &nbsp;<input type="radio" name="customer_or_backend" value="Back-end support" ng-model="basic.functions"></p>
+                    </div>
+                </div>
+                <div id="part1" class="row" ng-if="part1">
+                    <h4>Now Let's begin!</h4>
+                    <form role="form" id="statement_form" class="container_border">
+                        <div class="form-group" ng-repeat="statement in statements"><label>{{statement.id}}. {{statement.statement}}</label>
+                            <div class="radio" ng-repeat="category in categories">
+                                <label>
+                                    <input type="radio" name="stat_{{statement.id}}" value="{{category.value}}" ng-model="statement.value"> {{category.name}}
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                    <div style="float: right;margin-bottom: 100px;;">
+                        <input class="btn btn-info" type="button" value="Next" id="nextBtn" ng-click="next();">
+                    </div>
+                </div>
+                <div id="part2" class="row" ng-if="part2">
+                    <h4>Now, please drag & drop statements below to rank statements in each group from the best to the worst in terms of their potential for yielding synergy benefits. </h4>
+                    <div class="container_border">
+                        <table class="table">
+                            <tbody>
+                            <tr ng-repeat="category in categories">
+                                <td>{{category.name}}:</td>
+                                <td>
+                                    Total: {{group[category.value].length}}<br>
+                                    <!--Rank:&nbsp;<label ng-repeat="index in group[category.value]"  class="label label-primary">-->
+                                    <!--<span ng-bind="group[category.value][$index]"></span>-->
+                                <!--</label>-->
+                                </td>
+                                <td>
+                                    <ul id="songListEdit_{{category.value}}" class="sortable list">
+                                        <li class="ui-sortable-{{category.value}}" ng-repeat="index in group[category.value]" data-id="{{statements[index-1].id}}">
+                                            {{statements[index-1].id}}.{{statements[index-1].statement}}
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="float: right;margin-bottom: 100px;;">
+                        <input class="btn btn-info" type="button" value="Submit" id="Submit" data-toggle="modal" data-target="#myModal">
+                    </div>
+                    <input class="btn btn-info" type="button" value="Previous" id="Previous" ng-click="prev();">
+
+                </div>
+                <div ng-if="part3">
+                    <h2>Thank you and your survey has been submitted.</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure want to submit the survey?</p>
+                    <!--<form method="get" class="form-horizontal">-->
+                        <!--<div class="form-group"><label class="col-lg-2 control-label">Your Company</label>-->
+                            <!--<div class="col-lg-10"><p class="form-control-static">{{company}}</p></div>-->
+                        <!--</div>-->
+                        <!--<div class="hr-line-dashed"></div>-->
+                        <!--<div class="form-group"><label class="col-lg-2 control-label">Your Title</label>-->
+                            <!--<div class="col-lg-10"><p class="form-control-static">{{title}}</p></div>-->
+                        <!--</div>-->
+                        <!--<div class="hr-line-dashed"></div>-->
+                        <!--<div class="form-group"><label class="col-lg-2 control-label">Functions of your job</label>-->
+                            <!--<div class="col-lg-10"><p class="form-control-static">{{functions}}</p></div>-->
+                        <!--</div>-->
+                        <!--<div class="hr-line-dashed"></div>-->
+                        <!--<div class="form-group"><label class="col-lg-2 control-label">Your Anwser:</label>-->
+                            <!--<div class="col-lg-10">-->
+                                <!--<table class="table">-->
+                                    <!--<tbody>-->
+                                    <!--<tr ng-repeat="category in categories">-->
+                                        <!--<td>{{category.name}}:</td>-->
+                                        <!--<td>-->
+                                            <!--Total: {{group[category.value].length}}<br>-->
+                                            <!--Rank:&nbsp;<label ng-repeat="index in group[category.value]"  class="label label-primary">-->
+                                            <!--<span ng-model="$parent.group[$parent.category.value][$index]"></span>-->
+                                            <!--</label>-->
+                                        <!--</td>-->
+                                    <!--</tr>-->
+                                    <!--</tbody>-->
+                                <!--</table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="hr-line-dashed"></div>-->
+
+                    <!--</form>-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="submit();">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="home.js"></script>
+<script type="text/javascript">
+    var app = angular.module('App', []);
+
+    function WinMove(i,$scope) {
+        if($('#songListEdit_'+i).find("li").size()>0){
+            $('#songListEdit_'+i).sortable().bind('sortupdate',function() {
+                var group_id = i;
+                var news = [];
+                var j = 0;
+                $('#songListEdit_'+i).find("li").each(function(){
+                    news.push($(this).data("id"));
+                    $scope.group[i].splice(j,1,Number($(this).data("id")));
+                    j+=1;
+                });
+            });
+        }
+    }
+
+    app.controller("stateCtr",function($scope,$http,$timeout){
+        $scope.basic={company:"",title:"",functions:""}
+        $http.get("/statement",{}).success(function(data){
+            $scope.statements = data;
+            for(var i = 0;i<18; i++){
+                $scope.statements[i].value = Math.round(Math.random()*4);
+            }
+        });
+        $scope.part0 = true;
+        $scope.part1 = true;
+        $scope.part2 = false;
+        $scope.part3 = false;
+        $scope.categories = [
+            {value:0,name:"Strong Yes"},{value:1,name:"Somewhat Yes"},{value:2,name:"Maybe"},{value:3,name:"Somewhat No"},{value:4,name:"Strong No"}
+        ];
+        $scope.prev = function(){
+            $scope.part1 = true;
+            $scope.part2 = false;
+        }
+
+        $scope.submit = function(){
+            debugger;
+            $http.post("/",{"Company":$scope.basic.company,"Title":$scope.basic.title,"Functions":$scope.basic.functions,"group":$scope.group}).success(function(data){
+                $('#myModal').modal('hide');
+                $scope.part0 = false;
+                $scope.part1 = false;
+                $scope.part2 = false;
+                $scope.part3 = true;
+            });
+        }
+        $scope.next = function(){
+//            if(!$scope.company){
+//                alert("Input your company please");
+//                return;
+//            }
+//            if(!$scope.title){
+//                alert("Input your title please");
+//                return;
+//            }
+//            if(!$scope.functions){
+//                alert("Select your functions please");
+//                return;
+//            }
+            var group = {0:[],1:[],2:[],3:[],4:[]};
+            for(var i = 0;i<$scope.statements.length;i++){
+                var value = $scope.statements[i].value;
+                if(value===undefined||value===null){
+                    alert("Statement "+$scope.statements[i].id+" is not answered");
+                    return;
+                }
+                group[value].push($scope.statements[i].id);
+            }
+            $scope.part1=false;
+            $scope.part2 = true;
+            $scope.group = group;
+
+            $timeout(function(){
+                WinMove(0,$scope);
+                WinMove(1,$scope);
+                WinMove(2,$scope);
+                WinMove(3,$scope);
+                WinMove(4,$scope);
+            },1000);
+        }
+    });
+</script>
+</body>
+</html>
