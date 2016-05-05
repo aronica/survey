@@ -6,5 +6,5 @@ RUN apt-get update
 RUN apt-get install telnet  -y --force-yes
 ADD data node_modules public app.css app.js data.csv Dockerfile package.json /app/
 VOLUME ["/var/run","/var/log"]
-EXPOSE 3000
+EXPOSE 3000 1234 80
 RUN npm install -g --registry=https://registry.npm.taobao.org
