@@ -14,7 +14,8 @@
     "underscore": "~1.4",
     "debug": "~0.7.2",
     "swig":"*",
-    "body-parser":"*"
+    "body-parser":"*",
+    "log4js":"*"
   },
   "devDependencies": {
     "mocha": "~1.13.0",

@@ -7,6 +7,20 @@ var app = express();
 var path = require("path");
 var statement = require("./data/state");
 var bodyParser = require("body-parser");
+var log4js = require("log4js");
+
+log4js.configure({
+   appenders: [
+      { type: 'console' },
+      { type: 'file', filename: 'survey.log', category: 'survey' }
+   ]
+});
+
+app.use(log4js.connectLogger(log4js.getLogger("survey"), {level: log4js.levels.INFO}));
+
+var logger = log4js.getLogger("App");
+logger.info("Yes");
+
 app.use(bodyParser.json());
 //app.engine('html', swig.renderFile);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,13 +65,13 @@ app.get("/data",function(req,res){
          res.status(err.status).end();
       }
       else {
-         console.log('Sent:', fileName);
+         console.log('Sent:', "ok");
       }
    });
 
 });
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 80;
 app.listen(port, function(){
    log("Listening on %s", port);
 });
