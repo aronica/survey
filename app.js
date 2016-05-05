@@ -71,7 +71,7 @@ app.get("/data",function(req,res){
 
 });
 
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 3000;
 app.listen(port, function(){
    log("Listening on %s", port);
 });
