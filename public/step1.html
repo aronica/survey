@@ -227,9 +227,9 @@
         $scope.basic={company:"",title:"",functions:""}
         $http.get("/statement",{}).success(function(data){
             $scope.statements = data;
-            for(var i = 0;i<18; i++){
-                $scope.statements[i].value = Math.round(Math.random()*4);
-            }
+//            for(var i = 0;i<18; i++){
+//                $scope.statements[i].value = Math.round(Math.random()*4);
+//            }
         });
         $scope.part0 = true;
         $scope.part1 = true;
@@ -244,7 +244,6 @@
         }
 
         $scope.submit = function(){
-            debugger;
             $http.post("/",{"Company":$scope.basic.company,"Title":$scope.basic.title,"Functions":$scope.basic.functions,"group":$scope.group}).success(function(data){
                 $('#myModal').modal('hide');
                 $scope.part0 = false;
@@ -254,18 +253,18 @@
             });
         }
         $scope.next = function(){
-//            if(!$scope.company){
-//                alert("Input your company please");
-//                return;
-//            }
-//            if(!$scope.title){
-//                alert("Input your title please");
-//                return;
-//            }
-//            if(!$scope.functions){
-//                alert("Select your functions please");
-//                return;
-//            }
+            if(!$scope.company){
+                alert("Input your company please");
+                return;
+            }
+            if(!$scope.title){
+                alert("Input your title please");
+                return;
+            }
+            if(!$scope.functions){
+                alert("Select your functions please");
+                return;
+            }
             var group = {0:[],1:[],2:[],3:[],4:[]};
             for(var i = 0;i<$scope.statements.length;i++){
                 var value = $scope.statements[i].value;
